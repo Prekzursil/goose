@@ -1,0 +1,57 @@
+name: CodeQL
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  schedule:
+    - cron: "30 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ${{ matrix.os || 'ubuntu-latest' }}
+    permissions:
+      # required for all workflows
+      security-events: write
+      # required to fetch internal or private CodeQL packs
+      packages: read
+      contents: read
+      actions: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - language: rust
+            build-mode: none
+          - language: javascript-typescript
+            build-mode: none
+          - language: python
+            build-mode: none
+          # java-kotlin intentionally absent: the only JVM sources in this repo
+          # are 7 uniffi SUPPORT Kotlin files (crates/goose-sdk/maven/src/
+          # support + one example) with no buildable in-repo JVM project — the
+          # bindings are generated from Rust during a full build. CodeQL
+          # java-kotlin with build-mode none extracted ZERO files and failed
+          # with "could not process any code written in Java/Kotlin" (exit 32);
+          # default setup uses the same extractor and cannot run either.
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+          queries: security-extended, security-and-quality
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: "/language:${{ matrix.language }}"

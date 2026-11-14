@@ -31,3 +31,35 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+
+  # Dockerfiles: root CLI/server image, devcontainer, recipe-scanner, ask-ai-bot.
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "docker"
+    directory: "/.devcontainer"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "docker"
+    directory: "/recipe-scanner"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "docker"
+    directory: "/services/ask-ai-bot"
+    schedule:
+      interval: "weekly"
+
+  # Python manifests outside the cargo/pnpm workspaces.
+  - package-ecosystem: "pip"
+    directory: "/crates/goose-sdk/python"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "pip"
+    directory: "/examples/mcp-wiki"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "pip"
+    directory: "/scripts/provider-error-proxy"
+    schedule:
+      interval: "weekly"
