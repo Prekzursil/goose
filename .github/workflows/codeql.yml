@@ -33,8 +33,13 @@ jobs:
             build-mode: none
           - language: python
             build-mode: none
-          - language: java-kotlin
-            build-mode: none
+          # java-kotlin intentionally absent: the only JVM sources in this repo
+          # are 7 uniffi SUPPORT Kotlin files (crates/goose-sdk/maven/src/
+          # support + one example) with no buildable in-repo JVM project — the
+          # bindings are generated from Rust during a full build. CodeQL
+          # java-kotlin with build-mode none extracted ZERO files and failed
+          # with "could not process any code written in Java/Kotlin" (exit 32);
+          # default setup uses the same extractor and cannot run either.
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
