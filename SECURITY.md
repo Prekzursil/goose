@@ -13,3 +13,38 @@
 > AAIF (Agentic AI Foundation) recognizes the important contributions our open source community makes. Part of keeping goose and its users safe is by making sure that we find and fix any security issues found in our open source projects. If you find a security vulnerability, we encourage you to privately report it in the repository’s Security tab -> Report a vulnerability.
 >
 > Please see [privately reporting a security vulnerability](https://docs.github.com/en/code-security/security-advisories/guidance-on-reporting-and-writing-information-about-vulnerabilities/privately-reporting-a-security-vulnerability#privately-reporting-a-security-vulnerability) for more information. For assistance or escalation, please contact the [AAIF Open Source Governance Committee](mailto:open-source-governance@block.xyz)
+# Security Policy — goose (fork)
+
+## Documented residual risks (no fixed release reachable)
+
+Verified 2026-11-18 against crates.io; every alert below is a transitive
+requirement declared by the LATEST published release of its dependent, so no
+in-repo bump can reach the fixed version. None are dismissed or muted.
+
+### `rmcp` 1.8.0 (4 Dependabot alerts; fixes 2.0.0 / 2.1.0)
+- Chain: workspace crates -> `pctx_code_execution_runtime` / `pctx_config` /
+  `pctx_registry` (crates.io 0.1.x, latest 0.1.5) -> `rmcp ^1.2.0`.
+- goose itself already pins `rmcp 3.0.0` for its direct usage; the vulnerable
+  1.x copies exist only under the pctx crates, whose newest releases still
+  require ^1.2.0.
+
+### `zip` 8.6.0 (5 alerts; fix 9.0.0 / 9.0.5)
+- Chain: `docx-rs` / `umya-spreadsheet` (document-export path) -> `zip ^8`.
+- goose's direct `zip` pin is already `9`; the 8.6.0 copy is transitive-only.
+
+### `opentelemetry_sdk` 0.31.0 (1 alert; fix 0.32.1)
+- Chain: `pctx_config` -> `opentelemetry-otlp`/`opentelemetry_sdk ^0.31`.
+- goose's workspace pins are already 0.32.
+
+### `extract-zip` (2 alerts, ui/pnpm-lock.yaml; no fixed release exists)
+- Advisory covers all published versions; `npm view extract-zip versions`
+  tops out at the affected latest. Re-check when a patched release lands.
+
+### Resolution path
+When pctx (rmcp/otel) or docx-rs/umya-spreadsheet (zip) publish releases on
+the fixed majors — or extract-zip publishes a fix — bump and delete each
+entry here. Dependabot re-flags them automatically.
+
+## Reporting a Vulnerability
+Use upstream block/goose security policy for upstream code; open a private
+vulnerability report on this fork for fork-specific changes.
