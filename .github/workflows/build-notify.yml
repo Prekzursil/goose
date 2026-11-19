@@ -27,6 +27,13 @@ jobs:
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_GOOSE_STATUS }}
         run: |
+          # Forks do not configure the Discord webhook secret; curl exits 2
+          # ("failed to initialize") on an empty URL, which turned this
+          # notifier lane red (2026-11-14). Skip cleanly instead.
+          if [ -z "$DISCORD_WEBHOOK_URL" ]; then
+            echo "DISCORD_WEBHOOK_GOOSE_STATUS secret not set - skipping notification"
+            exit 0
+          fi
           curl -sS --fail-with-body -H "Content-Type: application/json" \
             -d '{
               "embeds": [{
