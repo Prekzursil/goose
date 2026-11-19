@@ -17,18 +17,24 @@
 
 ## Documented residual risks (no fixed release reachable)
 
-Verified 2026-11-18 against crates.io; every alert below is a transitive
-requirement declared by the LATEST published release of its dependent, so no
-in-repo bump can reach the fixed version. None are dismissed or muted.
+Verified 2026-11-18 and RE-VERIFIED 2026-11-19 against the crates.io and
+npm registry APIs (pctx_code_mode 0.7.0 -> pctx_executor 0.4.0 ->
+pctx_code_execution_runtime 0.3.1 -> rmcp ^1.8.0; docx-rs 0.4.22 -> zip
+^8.6.0; pctx_config 0.1.5 -> opentelemetry-otlp 0.31.x; extract-zip
+dist-tags.latest = 2.0.1). Every alert below is a transitive requirement
+declared by the LATEST published release of its dependent, so no in-repo
+bump can reach the fixed version. None are dismissed or muted. Current
+open-alert counts (12 total): rmcp x2, zip x7, opentelemetry_sdk x1,
+extract-zip x2.
 
-### `rmcp` 1.8.0 (4 Dependabot alerts; fixes 2.0.0 / 2.1.0)
+### `rmcp` 1.8.0 (2 Dependabot alerts; fixes 2.0.0 / 2.1.0)
 - Chain: workspace crates -> `pctx_code_execution_runtime` / `pctx_config` /
   `pctx_registry` (crates.io 0.1.x, latest 0.1.5) -> `rmcp ^1.2.0`.
 - goose itself already pins `rmcp 3.0.0` for its direct usage; the vulnerable
   1.x copies exist only under the pctx crates, whose newest releases still
   require ^1.2.0.
 
-### `zip` 8.6.0 (5 alerts; fix 9.0.0 / 9.0.5)
+### `zip` 8.6.0 (7 alerts; fix 9.0.0 / 9.0.5)
 - Chain: `docx-rs` / `umya-spreadsheet` (document-export path) -> `zip ^8`.
 - goose's direct `zip` pin is already `9`; the 8.6.0 copy is transitive-only.
 
